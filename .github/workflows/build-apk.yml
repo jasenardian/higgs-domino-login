@@ -39,8 +39,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Add Android Platform
-        run: npx cap add android
+      # STEP REMOVED: npx cap add android (Folder android already exists in repo)
 
       - name: Sync Capacitor
         run: npx cap sync android
