@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Updated to Node 20 for Vite compatibility
+          node-version: '22'  # Updated to Node 22 for latest Capacitor CLI compatibility
           cache: 'npm'
 
       - name: Install Dependencies
