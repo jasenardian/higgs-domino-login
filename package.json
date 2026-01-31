@@ -13,7 +13,6 @@
     "@capacitor/android": "^8.0.2",
     "@capacitor/cli": "^8.0.2",
     "@capacitor/core": "^8.0.2",
-    "@capacitor/http": "^0.0.2",
     "axios": "^1.13.4",
     "daisyui": "^5.5.14",
     "react": "^19.2.0",
