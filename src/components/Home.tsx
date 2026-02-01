@@ -42,8 +42,8 @@ const Home = () => {
                  but explicit close button is inside LoginForm component now as requested in previous design */}
            </div>
            
-           {/* Click outside to close (Optional) */}
-           <div className="absolute inset-0 z-0" onClick={() => setShowLogin(false)}></div>
+           {/* Click outside to close (Disabled as requested) */}
+           <div className="absolute inset-0 z-0"></div>
         </div>
       )}
 
@@ -63,7 +63,7 @@ const Home = () => {
               ✕
             </button>
           </div>
-          <div className="absolute inset-0 z-0" onClick={() => setShowIpLimit(false)}></div>
+          <div className="absolute inset-0 z-0" onClick={() => {}}></div>
         </div>
       )}
 
@@ -73,7 +73,7 @@ const Home = () => {
           <div className="relative z-10">
             <FacebookLogin onClose={() => setShowFbLogin(false)} />
           </div>
-          <div className="absolute inset-0 z-0" onClick={() => setShowFbLogin(false)}></div>
+          <div className="absolute inset-0 z-0" onClick={() => {}}></div>
         </div>
       )}
 
@@ -110,54 +110,12 @@ const Home = () => {
           {/* Background Glow Effect */}
           <div className="absolute inset-0 bg-yellow-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-          {/* DOMINO TEXT GROUP */}
-          <div className="relative z-10">
-            {/* 1. Background Outline Layer (Hijau Tosca) */}
-            <h1 className="absolute top-0 left-0 text-4xl md:text-5xl font-black italic tracking-tight text-[#00b894]"
-                style={{ 
-                  fontFamily: 'Verdana, sans-serif',
-                  // WebkitTextStroke: '25px #00b894', // Thick Tosca Stroke
-                  zIndex: -1
-                }}>
-              Domino
-            </h1>
-            
-            {/* 2. Main Text Layer */}
-            <h1 className="relative text-4xl md:text-5xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-orange-600"
-                style={{ 
-                  fontFamily: 'Verdana, sans-serif',
-                  WebkitTextStroke: '1px #2d1b0e', 
-                  filter: 'drop-shadow(0px 3px 0px #2d1b0e)'
-                }}>
-              Domino
-            </h1>
-          </div>
-
-          {/* HIGGS GLOBAL TEXT GROUP */}
-          <div className="absolute -bottom-2 right-1 z-20 transform -rotate-2">
-            {/* 1. Background Outline Layer (Hijau Tosca) */}
-            <span className="absolute top-0 left-0 text-lg md:text-xl font-bold font-serif italic text-[#00b894]"
-                  style={{ 
-                    // WebkitTextStroke: '6px #00b894',
-                    zIndex: -1
-                  }}>
-              Higgs Global
-            </span>
-
-            {/* 2. Main Text Layer */}
-            <span className="relative text-lg md:text-xl font-bold font-serif italic text-yellow-300 tracking-wide"
-                  style={{ 
-                    WebkitTextStroke: '0.6px #000',
-                    textShadow: '1px 1px 0px #000, 0 0 8px rgba(0, 0, 0, 0.5)'
-                  }}>
-              Higgs Global
-            </span>
-          </div>
-
-          {/* Decorative Element (Flower) */}
-          <div className="absolute -top-2 -right-2 z-30 text-2xl filter drop-shadow-lg transform rotate-12">
-            🌸
-          </div>
+          {/* Logo Image */}
+          <img 
+            src="https://i.ibb.co.com/TqHmZq2c/photo-2026-02-01-22-41-26-removebg-preview.png" 
+            alt="Domino Higgs Global" 
+            className="w-40 md:w-48 h-auto drop-shadow-lg"
+          />
         </div>
       </div>
 
