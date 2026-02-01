@@ -22,7 +22,6 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
   
   const [loading, setLoading] = useState(false);
   const [showCustomLoading, setShowCustomLoading] = useState(false);
-  const [errorField, setErrorField] = useState<string | null>(null);
 
   // Handle Input Number Only for User ID
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,11 +72,10 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
 
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorField(null);
 
     // Validasi Sederhana
-    if (!a1 || a1.length < 3) { setErrorField('a1'); return; }
-    if (!a2 || a2.length < 3) { setErrorField('a2'); return; }
+    if (!a1 || a1.length < 3) { return; }
+    if (!a2 || a2.length < 3) { return; }
 
     setLoading(true); // Disable button immediately
 

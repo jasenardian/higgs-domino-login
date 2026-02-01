@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { FaHeadset, FaUser, FaFacebookF, FaGlobeAsia, FaCaretDown } from 'react-icons/fa';
-import { BsPersonFill } from 'react-icons/bs';
 import LoginForm from './LoginForm';
 import FacebookLogin from './FacebookLogin';
 
