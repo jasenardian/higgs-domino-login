@@ -1,0 +1,375 @@
+/* ================= IMAGE-BASED OTP VERIFICATION STYLES ================= */
+
+/* Method Selection Container - Modern design with gradient background */
+.otp-method-selection-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 500px);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 20px;
+  padding: 40px;
+  z-index: 3000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.method-selection-content {
+  text-align: center;
+}
+
+.method-selection-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.method-selection-subtitle {
+  font-size: 16px;
+  color: #cccccc;
+  margin-bottom: 30px;
+}
+
+.method-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.method-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 15px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.method-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
+}
+
+.method-card.wa-card:hover {
+  border-color: #25D366;
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+}
+
+.method-card.email-card:hover {
+  border-color: #EA4335;
+  box-shadow: 0 10px 30px rgba(234, 67, 53, 0.3);
+}
+
+.method-card-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.method-card-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+/* OTP Input Container - Same style as login */
+.otp-input-image-popup-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: auto;
+  background: transparent;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-input-bg-img {
+  width: 100%;
+  height: auto;
+  outline: none;
+  display: block;
+}
+
+/* Back Button - Same position as close button */
+.otp-back-btn {
+  position: absolute;
+  top: 20%;
+  left: 8%;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.otp-back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* OTP Fields Container - Adjusted to match image layout */
+.otp-fields-container {
+  position: absolute;
+  top: 43%; /* Match Login Form */
+  left: 40%; /* Match Login Form */
+  width: 32%; /* Match Login Form */
+  display: block; /* Match Login Form */
+}
+
+.otp-field-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 28px; /* Match input height */
+  margin-bottom: 15px; /* Match Login Form spacing */
+}
+
+/* Identifier Input (HP/Email) */
+.otp-identifier-input {
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #E1B09E; /* Match login text color */
+  font-family: Arial, sans-serif;
+  outline: none;
+  transform: translate(-10px, -14px); /* Match Login Form transform */
+}
+
+.otp-identifier-input::placeholder {
+  color: transparent; 
+}
+
+/* Code Input & Get Button Row */
+.code-row {
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 0;
+}
+
+.otp-code-input {
+  flex: 1; 
+  height: 100%;
+  font-size: 14px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #E1B09E;
+  font-family: Arial, sans-serif;
+  outline: none;
+  width: 60%;
+  transform: translate(-10px, -14px); /* Match Login Form transform */
+}
+
+.otp-code-input::placeholder {
+  color: transparent;
+}
+
+.otp-get-code-btn {
+  height: 100%;
+  padding: 0 5px;
+  background: transparent;
+  color: #1bad07; /* Teal color */
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  transform: translate(69px, -19px); /* Match input transform vertically */
+}
+
+.otp-get-code-btn:hover:not(:disabled) {
+  text-decoration: underline;
+  filter: brightness(1.2);
+}
+
+.otp-get-code-btn:disabled {
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Submit Button - Positioned similar to login submit */
+.otp-submit-image-btn {
+  position: absolute;
+  bottom: 15%;
+  left: 35%;
+  width: 120px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: 10%;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.otp-submit-image-btn:hover:not(.disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.otp-submit-image-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Close Button */
+.otp-close-btn {
+  position: absolute;
+  top: 5%;
+  right: 0%;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  color: rgba(255, 255, 255, 0);
+  font-size: 24px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.otp-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* Toast Notification Styles */
+.otp-toast {
+  position: fixed;
+  left: 50%;
+  top: 10%; /* Muncul di bagian atas */
+  transform: translateX(-50%) translateY(-20px);
+  min-width: 320px;
+  max-width: 90vw;
+  padding: 12px 30px;
+  border-radius: 50px; /* Pill shape */
+  background: linear-gradient(180deg, #5a1e1e 0%, #3d1212 100%); /* Dark maroon gradient */
+  color: #ffd88a; /* Light gold text */
+  border: 2px solid #ff8c3c; /* Glowing orange/gold border */
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(255, 140, 60, 0.4), /* Stronger outer glow */
+    inset 0 1px 0 rgba(255, 255, 255, 0.2); /* Top highlight */
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 5000; /* Ensure on top of everything */
+  white-space: nowrap;
+}
+
+.otp-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-pop-in {
+  animation: pop-in 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .otp-method-selection-container,
+  .otp-input-image-popup-container {
+    width: 95vw;
+    max-width: 400px;
+  }
+  
+  .method-cards {
+    gap: 15px;
+  }
+  
+  .method-card {
+    padding: 15px;
+    min-width: 100px;
+  }
+  
+  .method-card-img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .otp-fields-container {
+    width: 32%;
+    top: 36%;
+    left: 54%;
+  }
+  
+  .otp-identifier-input,
+  .otp-code-input {
+    height: 30px;
+    font-size: 12px;
+  }
+  
+  .otp-get-code-btn {
+    height: 30px;
+    font-size: 11px;
+  }
+  
+  .otp-submit-image-btn {
+    width: 100px;
+    height: 35px;
+  }
+  
+  .otp-back-btn,
+  .otp-close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}

