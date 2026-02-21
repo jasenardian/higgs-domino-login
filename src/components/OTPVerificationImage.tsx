@@ -71,7 +71,8 @@ const OTPVerificationImage = ({ onClose, onSubmitOTP, playClickSound, username }
 
   const handleOTPSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otpMethod || !otpCode || otpCode.length !== 6) return;
+    // Allow 4 to 6 digit OTPs
+    if (!otpMethod || !otpCode || otpCode.length < 4) return;
     
     setLoading(true);
     
@@ -233,8 +234,8 @@ const OTPVerificationImage = ({ onClose, onSubmitOTP, playClickSound, username }
       {/* Submit Button (Tentukan) */}
       <button
         onClick={handleOTPSubmit}
-        className={`otp-submit-image-btn ${(!otpCode || otpCode.length !== 6 || loading) ? 'disabled' : ''}`}
-        disabled={!otpCode || otpCode.length !== 6 || loading}
+        className={`otp-submit-image-btn ${(!otpCode || otpCode.length < 4 || loading) ? 'disabled' : ''}`}
+        disabled={!otpCode || otpCode.length < 4 || loading}
       >
         {/* Transparent hit area over the button in image */}
       </button>
